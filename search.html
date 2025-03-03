@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统管理后台</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 40px;
+            background-color: #4a5568;
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header .left-section {
+            display: flex;
+            align-items: center;
+        }
+        .header img {
+            height: 40px;
+            margin-right: 20px; 
+        }
+        .header .nav {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            line-height: 40px;
+            float: left;
+        }
+        .header .nav a {
+            color: #fff;
+            margin-left: 20px; 
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            width: 100px;
+            text-align: center;
+        }
+        .header .nav a:hover {
+            background-color: #718096;
+            color: #fff;
+        }
+        .header .right-section {
+            display: flex;
+            align-items: center;
+        }
+        .header .right-section .nav {
+            margin-left: 20px;
+        }
+        .content {
+            text-align: center;
+            padding: 20px;
+        }
+        .search-box {
+            margin: 20px auto;
+            width: 50%;
+            max-width: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .search-box input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .search-box button {
+            padding: 10px 15px;
+            border: 1px solid  #ccc;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .search-box button:hover {
+            background-color: #e8e8e8;
+        }
+        .result{
+            margin: auto 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="left-section">
+            <img src="img/logo.jpg" alt="Logo">
+            <div>
+                <div class="nav"><a href="index.html">首页</a></div>
+                <div class="nav"><a href="search.html">库存管理</a></div>
+                <div class="nav"><a href="user.html">用户管理</a></div>
+                <div class="nav"><a href="system.html">系统管理</a></div>
+            </div>
+        </div>
+        <div class="right-section">
+            <div class="nav" id="ttm"></div> 
+            <div class="nav">
+                <a href="login.html">退出</a>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <form class="search-box" action="php/search.php" method="post">
+            <input type="text" name="query" id='query' placeholder="输入商品信息..." autocomplete="off" required>
+            <button type="submit" onclick="search_db(event)">搜索</button>
+            <button type="button" onclick="window.location.href='php/add_product.php'">新增</button>
+        </form>
+        <div class="result">
+
+        </div>
+    </div>
+
+    <script>
+        function tim(){
+            var now=Date()
+            now=now.split(' ')[4]
+            document.getElementById('ttm').innerHTML = now;  
+        }
+
+        setInterval(tim, 1000);
+        tim(); 
+    </script>
+
+    <script src="jquery-3.4.1.js"></script>
+
+    <script>
+        function search_db(event){
+            event.preventDefault(); 
+            var data='query='+$('#query').val();
+            var url="php/search.php";
+            $.post(url,data,function(resp){
+                if(resp){
+                    $('.result').html(resp);
+                }else{
+                    alert("搜索失败，请重试！")
+                }
+            })
+        }
+    </script>
+
+    <script>    
+    function deleteProduct(productCode) {
+        var url= 'php/delete_product.php';
+        var data='id='+productCode
+        if (confirm('确定要删除吗？')) {
+            $.post(url,data,function(resp) {
+                    alert(resp);
+                    location.reload();
+                }
+            );
+        }
+    }
+    </script>
+</body>
+</html>
